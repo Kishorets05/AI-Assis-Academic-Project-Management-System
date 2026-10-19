@@ -1,176 +1,183 @@
-# PROJINTEL — AI-Driven Academic Project Intelligence & Management Platform
+# PROJINTEL
 
-PROJINTEL is a full-stack, enterprise-grade Academic Project Tracking & Management System engineered for engineering colleges, universities, and capstone project coordination. It connects **Students**, **Faculty Guides**, and **Department Heads / Admins** with end-to-end milestone tracking, AI-assisted proposal analysis, defense reviews with advisory evaluation, weekly progress grading, and a centralized document repository.
+PROJINTEL is an academic project management platform for students, faculty guides, and department administrators. It provides project and milestone dashboards, proposal and review workflows, document handling, and AI-assisted academic project tools.
 
----
+## Features
 
-## 🚀 Key Features & Modules
+- **Student workspace:** project proposals and status, milestone and task tracking, weekly progress reporting, review schedules and submissions, document uploads, and an AI project assistant.
+- **Faculty workspace:** proposal review, project oversight, review scheduling, deliverable review, official grading, weekly feedback, and document access.
+- **Department administration:** project and faculty allocation, workload insights, project similarity checks, and department metrics.
+- **AI services:** proposal and feasibility analysis, deterministic risk calculation and AI risk explanations, task prioritization, project summaries, weekly report analysis, feedback drafting, similarity and workload analysis, faculty recommendations, academic insights, chat assistance, and review evaluation.
+- **Document and review APIs:** store document metadata in MongoDB, save uploaded files on the server, and manage defense-review submissions and evaluations.
 
-### 1. 🎓 Student Workspace
-- **Proposal Lifecycle**: Create, edit, and submit capstone proposals with problem statements, objectives, and technology stack. Resubmit upon faculty revision requests.
-- **8-Stage Milestone Management**: Track stages from *Problem Definition* to *Final Presentation & Viva Demo* with progress percentages.
-- **Milestone Task Tracker**: Break down milestone stages into actionable tasks with priority tags (HIGH, MEDIUM, LOW) and status toggles.
-- **Weekly Progress Reporting**: Submit weekly updates, problems encountered, and next week's action plans with pre-submission AI blocker detection.
-- **Defense Reviews & Deliverables**: View upcoming defense reviews, countdown timers, instructions, and upload technical reports/presentation slides (PDF, PPTX, ZIP).
-- **Document Repository**: Drag-and-drop file upload, versioning, category filtering, and direct download links.
-- **AI Assistant**: Built-in Groq-powered AI drawer for real-time project guidance, risk explanations, and task prioritization.
+### Current implementation notes
 
-### 2. 👨‍🏫 Faculty Guide Portal
-- **Proposal Review Queue**: Review submitted project proposals with 1-click **Approve**, **Request Revision** (with specific revision notes), or **Reject**.
-- **AI Proposal & Feasibility Analysis**: Automatically evaluate technical scope, feasibility, and architectural rigor.
-- **Defense Reviews & Evaluations**:
-  - Schedule milestone defense reviews with customized rubrics, deadlines, and maximum marks.
-  - Inspect student submissions and uploaded documents.
-  - **AI Evaluate**: Trigger advisory AI evaluation that generates suggested marks, letter grade, rubric breakdowns, strengths, weaknesses, and viva defense questions.
-  - **Faculty Grading Form**: 1-click sync AI suggestions into official grading with full faculty control over final scores.
-- **Weekly Reports & Feedback**: Review weekly progress reports, enter scores (0–100), and generate AI feedback suggestions.
-- **Department Document Repository**: Direct download access to all student deliverables across assigned projects.
+The frontend includes bundled demonstration projects and client-side login/role selection. It does not currently provide backend authentication or general project/student/faculty CRUD APIs. The Express API currently exposes health, AI, review, and document endpoints; review and document features require MongoDB. Some document/review upload flows can show an offline browser-only fallback, which is not persisted to MongoDB or the server.
 
-### 3. 🛡️ Department Admin Portal
-- **Project & Guide Allocation**: Allocate faculty guides to approved student teams based on domain and workload balance.
-- **Workload Intelligence**: AI-assisted faculty workload analytics and project similarity detection.
-- **Department Metrics**: Real-time stats on approved, in-progress, and completed projects.
+## Technology
 
----
+- **Frontend:** React 19, Vite 8, Bootstrap, Lucide React, CSS
+- **Backend:** Node.js, Express 5, Mongoose, Multer
+- **Database:** MongoDB (local or MongoDB Atlas)
+- **AI:** Groq Cloud through the server-side Groq SDK
 
-## 🛠️ Technology Stack
+## Repository layout
 
-- **Frontend**: React 18, Vite, Lucide Icons, Vanilla CSS Design System with dark/light themes.
-- **Backend**: Node.js, Express 5.x, Multer (multipart file uploads).
-- **Database**: MongoDB Atlas via Mongoose ODM (collections: `admins`, `faculties`, `students`, `projects`, `reviews`, `reviewsubmissions`, `reviewevaluations`, `documents`, `milestones`, `tasks`, `weeklyprogresses`).
-- **AI Engine**: Groq Cloud AI SDK (`llama-3.3-70b-versatile` / `openai/gpt-oss-120b`).
-
----
-
-## 📂 Project Structure
-
-```
-PROJINTEL/
-├── client/                     # Vite + React Frontend Application
-│   ├── src/
-│   │   ├── components/         # Modals, Dashboards, and UI Sections
-│   │   │   ├── StudentDashboard.jsx
-│   │   │   ├── GuideDashboard.jsx
-│   │   │   ├── AdminDashboard.jsx
-│   │   │   ├── StudentReviewSection.jsx
-│   │   │   ├── GuideReviewSection.jsx
-│   │   │   ├── SubmitReviewModal.jsx
-│   │   │   ├── ReviewEvaluationModal.jsx
-│   │   │   ├── ScheduleReviewModal.jsx
-│   │   │   ├── DocumentUploadModal.jsx
-│   │   │   ├── AIAssistantDrawer.jsx
-│   │   │   └── ...
-│   │   ├── services/           # REST & AI Service Connectors
-│   │   │   ├── aiService.js
-│   │   │   ├── reviewService.js
-│   │   │   └── documentService.js
-│   │   ├── App.jsx             # Main Application Component & State Hub
-│   │   └── App.css             # Unified CSS Design Tokens & Utilities
-│   └── package.json
-│
-├── server/                     # Node.js + Express Backend API
-│   ├── config/
-│   │   └── db.js               # MongoDB Connection & DNS Resolver
-│   ├── models/                 # Mongoose Data Models
-│   │   ├── Admin.js
-│   │   ├── Faculty.js
-│   │   ├── Student.js
-│   │   ├── Project.js
-│   │   ├── Review.js
-│   │   ├── ReviewSubmission.js
-│   │   ├── ReviewEvaluation.js
-│   │   ├── Document.js
-│   │   └── ...
-│   ├── routes/                 # Express REST Endpoints
-│   │   ├── aiRoutes.js         # Centralized AI Inference Routes
-│   │   ├── reviewRoutes.js     # Review Scheduling, Submissions & Grading
-│   │   └── documentRoutes.js   # Multer Multipart File Uploads & Downloads
-│   ├── services/
-│   │   └── ai/
-│   │       └── reviewEvaluator.js # Groq AI Review Evaluation Engine
-│   ├── scripts/
-│   │   └── seed.js             # Database Seeding Script
-│   ├── uploads/                # File Storage for Documents & Reviews
-│   ├── server.js               # Main Express Server Entry Point
-│   └── package.json
-│
-├── .env.example                # Sample Environment Variables
-├── .gitignore                  # Git Ignore Rules
-├── Sample_Login.txt            # Seeded Credentials Reference
-└── README.md                   # Project Documentation
+```text
+client/
+  src/components/   React pages, dashboards, and modals
+  src/services/     Frontend clients for AI, reviews, and documents
+  package.json      Frontend scripts and dependencies
+server/
+  config/db.js      Mongoose connection
+  models/           MongoDB/Mongoose models
+  routes/           AI, review, and document API endpoints
+  services/ai/      Groq-backed and deterministic AI services
+  scripts/          Database seed and development checks
+  uploads/          Locally stored uploaded files
+  server.js         Express application entry point
+  package.json      Backend scripts and dependencies
+.env.example        Environment-variable template
+README.md           Setup and project guide
 ```
 
----
+## Requirements
 
-## ⚡ Getting Started
+- Node.js 20.19 or newer (or 22.12 or newer) and npm
+- MongoDB running locally, or a MongoDB Atlas cluster
+- A Groq API key for AI-powered features (optional for running the frontend/backend; AI requests need it)
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/Kishorets05/AI-Assis-Academic-Project-Management-System.git
-cd AI-Assis-Academic-Project-Management-System
+## Install dependencies
+
+Run these commands from the repository root. The frontend and backend have separate package manifests and lockfiles, so install each separately:
+
+```powershell
+cd server
+npm ci
+cd ..\client
+npm ci
+cd ..
 ```
 
-### 2. Configure Environment Variables
-Create a `.env` file in the root directory (based on `.env.example`):
+Use `npm install` instead of `npm ci` only if you intend to change dependencies and regenerate a lockfile.
+
+## Configure environment variables
+
+Create a root-level `.env` from the example file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Edit `.env` and set the values below. Keep this file private: it contains credentials and is excluded from Git. Never put the Groq key in frontend source code or a `VITE_*` variable.
+
+| Variable | Purpose | Required |
+| --- | --- | --- |
+| `PORT` | Port for the Express API. Defaults to `5000` if omitted. The frontend currently calls `http://localhost:5000` directly, so keep this at `5000` unless you also update the frontend API URLs. | No |
+| `MONGO_URI` | MongoDB connection string used by the API and seed script. It also determines which database is selected. | Yes for database-backed API features |
+| `DB_NAME` | Present in some existing local/example `.env` files, but **not currently read by the application**. To choose a database, include its name as the path in `MONGO_URI`, such as `/Final_Yr_Project`. | No; currently unused |
+| `GROQ_API_KEY` | Secret API key used by the backend to authenticate requests to Groq. Without a valid key, AI-backed features are unavailable. | No for startup; yes for AI |
+| `GROQ_MODEL` | Groq model name requested for AI completions. The example uses `llama-3.3-70b-versatile`; the backend fallback when unset is `openai/gpt-oss-120b`. Use a model available to your Groq account. | No |
+
+The backend reads the root `.env` using the relative path `../.env`; start it from the `server` directory as shown below. The seed script resolves the root `.env` directly.
+
+## Connect to MongoDB
+
+### Option A: MongoDB Atlas
+
+1. Create an Atlas cluster and a database user with a password.
+2. In Atlas **Network Access**, allow the IP address of the machine running the backend. Avoid opening access to all IP addresses except for a temporary, controlled development setup.
+3. Copy the cluster connection string and replace the username, password, and cluster host. Add the database name after the host:
+
+   ```env
+   MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/Final_Yr_Project?retryWrites=true&w=majority&appName=Cluster0
+   ```
+
+4. Put the finished value in the root `.env`. If the password contains reserved URL characters (for example `@`, `:`, `/`, or `#`), URL-encode them before using the connection string.
+
+### Option B: Local MongoDB
+
+Install and start the MongoDB Community Server, then use:
+
 ```env
-PORT=5000
-MONGO_URI=mongodb+srv://<username>:<password>@cluster0.bedfb3z.mongodb.net/?appName=Cluster0
-DB_NAME=Final_Yr_Project
-GROQ_API_KEY=your_groq_api_key_here
-GROQ_MODEL=llama-3.3-70b-versatile
+MONGO_URI=mongodb://127.0.0.1:27017/Final_Yr_Project
 ```
 
-### 3. Install Dependencies
-```bash
-# Install backend dependencies
-cd server
-npm install
+Mongoose creates the database and collections when the application writes data. You do not need to pre-create the database. Check that the database name is in the URI path: setting `DB_NAME` alone does not change the selected database.
 
-# Install frontend dependencies
-cd ../client
-npm install
-```
+## Run the application
 
-### 4. (Optional) Seed the Database
-To populate MongoDB Atlas with initial projects, students, faculty, reviews, and document records:
-```bash
-cd server
-node scripts/seed.js
-```
+Open two terminals in the repository root.
 
-### 5. Run the Application
-In separate terminal windows:
+**Terminal 1 — backend API:**
 
-**Backend Server (Port 5000):**
-```bash
+```powershell
 cd server
 npm start
-# or node server.js
 ```
 
-**Frontend Client (Port 5173):**
-```bash
+The server listens on `http://localhost:5000` by default. Confirm it is running at `http://localhost:5000/api/health`. MongoDB connection errors are printed in this terminal.
+
+**Terminal 2 — frontend:**
+
+```powershell
 cd client
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open the Vite URL printed in the terminal (normally `http://localhost:5173`). The frontend's current service modules call the backend at `http://localhost:5000`; start the backend on that port for API-backed features.
 
----
+**Production frontend build:**
 
-## 🔑 Demo Login Credentials
+```powershell
+cd client
+npm run build
+npm run preview
+```
 
-| Role | Email / Login | Password | Notes |
-| :--- | :--- | :--- | :--- |
-| **System Admin** | `admin@vcet.edu.in` | `admin123` | Full Department Allocation & Analytics |
-| **Faculty Guide (HOD)** | `guide@vcet.edu.in` | `password123` | Proposal approval, AI defense evaluation, grading |
-| **Faculty Guide** | `sharma@vcet.edu.in` | `password123` | CSE Faculty Portal |
-| **Student Lead** | `student@vcet.edu.in` | `password123` | Associated with PROJ-01 (AI Platform) |
-| **Student (IoT)** | `anand@vcet.edu.in` | `password123` | Associated with PROJ-02 (Smart IoT) |
-| **Student (Vision)** | `rohan@vcet.edu.in` | `password123` | Associated with PROJ-03 (Vision Health) |
-| **Student (Blockchain)** | `meena@vcet.edu.in` | `password123` | Associated with PROJ-04 (Blockchain EHR) |
+## Optional: seed demo data
 
----
+From the repository root:
 
-## 📄 License
+```powershell
+cd server
+node scripts/seed.js
+```
+
+**Warning:** this script deletes existing records from the application's collections (and attempts to drop a legacy `users` collection) before inserting demo data. Run it only against a disposable development database. Verify `MONGO_URI` carefully and back up any data you need before running it; do not run it against a production or shared database. The script includes demo passwords and resets data to its bundled sample set.
+
+The seed script has a built-in fallback connection string if `MONGO_URI` is not set. Always create/configure the root `.env` and verify the target database before running the script; do not rely on the fallback.
+
+Demo login values (the frontend login is client-side demonstration behavior; it does not authenticate through a backend API):
+
+| Role | Email | Password |
+| --- | --- | --- |
+| System Admin | `admin@vcet.edu.in` | `admin123` |
+| Faculty Guide (HOD) | `guide@vcet.edu.in` | `password123` |
+| Faculty Guide | `sharma@vcet.edu.in` | `password123` |
+| Student Lead | `student@vcet.edu.in` | `password123` |
+| Student (IoT) | `anand@vcet.edu.in` | `password123` |
+| Student (Vision) | `rohan@vcet.edu.in` | `password123` |
+| Student (Blockchain) | `meena@vcet.edu.in` | `password123` |
+
+## API overview
+
+- `GET /api/health` — backend health
+- `/api/ai` — AI health and project/academic AI operations
+- `/api/reviews` — retrieve and schedule reviews, submit/upload deliverables, and record evaluations
+- `/api/documents` — upload, retrieve, and delete project documents
+- `/uploads/...` — serve uploaded document and review files
+
+Uploaded files are stored on the backend filesystem under `server/uploads/`; MongoDB stores their metadata. Back up the database and this folder together if you need to preserve uploaded content.
+
+## Troubleshooting
+
+- **MongoDB connection fails:** confirm the MongoDB service is running, the URI is valid, the database name is in the URI path, and (for Atlas) the current IP is allowed and the database credentials are correct.
+- **Backend reports a missing `.env`:** create `.env` in the repository root and start the backend from `server/` (`cd server; npm start`).
+- **AI endpoints report the service is unconfigured:** set a valid `GROQ_API_KEY` in the root `.env`, then restart the backend. Check `http://localhost:5000/api/ai/health`.
+- **Frontend cannot reach API-backed features:** ensure the backend is running on port `5000`. The frontend currently uses fixed `http://localhost:5000` service URLs.
+- **Port is already in use:** stop the other process using the port or change the backend port and update the frontend service URLs to match.
+
+## License
+
 This project is licensed under the ISC License.
